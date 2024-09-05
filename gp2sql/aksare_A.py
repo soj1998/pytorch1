@@ -65,7 +65,14 @@ class Stock_AkShare():
         print(stock_sse_deal_daily_df)
 
 
+
+
 akshare = Stock_AkShare(date='20210730')
 akshare.stock_sse_deal_daily_df()
 akshare = Stock_AkShare(date='20240730')
 akshare.stock_sse_deal_daily_df()
+
+
+# 000001 上证指数 399001 深证成指 399006 创业板指数 899050 北证50
+index_zh_a_hist_df = ak.index_zh_a_hist(symbol="899050", period="daily", start_date="20240901", end_date="20240905")
+print(index_zh_a_hist_df)
