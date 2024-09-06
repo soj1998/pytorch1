@@ -3,7 +3,7 @@ import pandas as pd
 import akshare as ak
 import warnings
 from datetime import datetime
-#from multiprocessing import Pool
+from multiprocessing import Pool
 from sqlalchemy import create_engine
 
 pd.set_option('display.max_rows', None)
@@ -111,40 +111,14 @@ def do_load_df2sql(ak_code, ak_name, start_date, end_date, timeout):
 
 
 def do_load_df2sql2(ak_code, ak_name, start_date, end_date, timeout):
-    # 复权表 3个 None 未复权 qfq 前复权 hfq后复权
-    # 周期数 3个 周期可选：'daily','weekly','monthly'
-
-    df = ak.stock_zh_a_hist(symbol=ak_code, period='daily', start_date=start_date, end_date=end_date,
-                                            timeout=timeout)
-    if df.empty:
-        return
-    if ak_code.startswith('6'):
-        df['交易所'] = '上海'
-    elif ak_code.startswith('8') or ak_code.startswith('4'):
-        df['交易所'] = '北京'
-    elif ak_code.startswith('300'):
-        df['交易所'] = '创业'
-    else:
-        df['交易所'] = '深圳'
-    df['股票名称'] = ak_name
-    df = df[['日期', '交易所', '股票代码', '股票名称', '开盘', '收盘', '最高', '最低',
-             '成交量', '成交额', '振幅', '涨跌幅', '涨跌额', '换手率']]
-    df.rename(columns={'日期': 'jyrq', '交易所': 'jys', '股票代码': 'gpdm', '股票名称': 'gpmc',
-                       '开盘': 'kp', '收盘': 'sp', '最高': 'zg', '最低': 'zd',
-                       '成交量': 'cjl', '成交额': 'cje', '振幅': 'zf', '涨跌幅': 'zdf', '涨跌额': 'zde',
-                       '换手率': 'hsl'}, inplace=True)
-    df.sort_values(by=['jyrq'], ascending=True, inplace=True)  # inplace是否在原DataFrame上改动，默认为False
-    df.reset_index(drop=True, inplace=True)
-    pd2sql(df, 'daily' + 'gp')
+    print(ak_name)
 
 
 if __name__ == '__main__':
     start_time = datetime.now()
-    #pool = Pool(8)
-    #pool.starmap(do_load_df2sql, [(code_list[i][0], code_list[i][1], start_date, end_date,
-    #                         timeout) for i in range(len(code_list))])
-    #pool.close()
-    #pool.join()
-    for i in range(100):
-        do_load_df2sql2(code_list[i][0], code_list[i][1], start_date, end_date, timeout)
+    pool = Pool(8)
+    pool.starmap(do_load_df2sql2, [(code_list[i][0], code_list[i][1], start_date, end_date,
+                             timeout) for i in range(100)])
+    pool.close()
+    pool.join()
     print('获取数据时间：', datetime.now() - start_time)
