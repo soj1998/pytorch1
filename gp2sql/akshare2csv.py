@@ -97,15 +97,17 @@ def do_load_df2sql(ak_code, ak_name, start_date, end_date, timeout):
                 else:
                     df['交易所'] = '深圳'
                 df['股票名称'] = ak_name
-                df = df[['日期', '交易所', '股票代码', '股票名称', '开盘', '收盘', '最高', '最低',
+                df['周期'] = periodlx[j]
+                df['复权'] = fqlx[i]
+                df = df[['日期', '交易所', '股票代码', '股票名称', '周期', '复权', '开盘', '收盘', '最高', '最低',
                          '成交量', '成交额', '振幅', '涨跌幅', '涨跌额', '换手率']]
                 df.rename(columns={'日期': 'jyrq', '交易所': 'jys', '股票代码': 'gpdm', '股票名称': 'gpmc',
-                                   '开盘': 'kp', '收盘': 'sp', '最高': 'zg', '最低': 'zd',
+                                   '周期': 'periodlx', '复权': 'fqlx', '开盘': 'kp', '收盘': 'sp', '最高': 'zg', '最低': 'zd',
                                    '成交量': 'cjl', '成交额': 'cje', '振幅': 'zf', '涨跌幅': 'zdf', '涨跌额': 'zde',
                                    '换手率': 'hsl'}, inplace=True)
                 df.sort_values(by=['jyrq'], ascending=True, inplace=True)  # inplace是否在原DataFrame上改动，默认为False
                 df.reset_index(drop=True, inplace=True)
-                pd2sql(df, str(fqlx[i]).lower() + str(periodlx[j]) + 'gp')
+                pd2sql(df, 'qbgp')
             except Exception as e:
                 print(e)
 
