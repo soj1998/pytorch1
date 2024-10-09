@@ -12,8 +12,8 @@ pd.set_option('expand_frame_repr', False)  # 当列太多时 True就是可以换
 pd.set_option('display.unicode.east_asian_width', True)
 
 # 输入参数
-start_date = '19000101'
-end_date = '20240930'
+start_date = '20241008'
+end_date = '20241008'
 adj = 'hfq'  # 复权类型：None 未复权 qfq 前复权 hfq后复权
 period = 'daily'  # 周期可选：'daily,'weekly','monthly'
 timeout = 100  # request超时时间
@@ -121,7 +121,7 @@ if __name__ == '__main__':
     pool1.join()
     print('指数搞完', datetime.now() - start_time)
     start_time = datetime.now()
-    pool = Pool(8)
+    pool = Pool(3)
     pool.starmap(do_load_df2sql_gp, [(code_list[i][0], code_list[i][1], start_date, end_date,
                              timeout) for i in range(len(code_list))])
     pool.close()
